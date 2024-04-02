@@ -1,0 +1,26 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pool:
+  name: default
+
+steps:
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'todo-app-server'
+    sourceFolder: '.'
+    contents: |
+      ./compose.yml
+      ./sql/*.*
+    targetFolder: '/opt/todoapp'
+    readyTimeout: '20000' 
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'todo-app-server'
+    runOptions: 'commands'
+    commands: 'docker compose -f /opt/todoapp/compose.yml up > /dev/null 2>&1 &'
+    readyTimeout: '20000'

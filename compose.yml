@@ -1,0 +1,20 @@
+services:
+  todoapp:
+    image: kkatleri/todoapp:latest
+    #network_mode: "host" #Required when connecting to a service(e.g database) running on host machine
+    ports:
+      - "80:9090"
+    depends_on:
+      - tododb
+    restart: on-failure
+  tododb:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: todo_db
+      MYSQL_USER: azureuser
+      MYSQL_PASSWORD: mysql
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+      
